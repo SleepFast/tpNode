@@ -4,7 +4,7 @@ const express = require('express')
 const router = express.Router()
 
 router.post("/login", controller.login)
-router.post("/bars", verifyToken, controller.register)
+router.post("/bars", controller.register)
 router.put("/bars/:id", verifyToken, controller.update)
 router.delete("/bars/:id", verifyToken, controller.delete)
 router.get("/bars", controller.getAll)

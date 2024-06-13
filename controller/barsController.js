@@ -46,14 +46,17 @@ controller.register = async (req, res) => {
 };
 
 controller.update = async (req, res) => {
+	const id = req.params.id;
 	const { name, adresse, tel, description, email, password } = req.body;
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+	const hashedPassword = await bcrypt.hash(password, 10);
 	const bars = { name, adresse, tel, description, email, password: hashedPassword };
 
-	Bars.update(bars, { where: { email } })
-		.then(() => {
-			return res.send({ message: "bars updated !" });
+	Bars.update(bars, { where: { id } })
+		.then((updateCount) => {
+			console.log(updateCount[0])
+			if (updateCount[0] === 0) return res.status(401).send({ message: "Bar not found" })
+			return res.send({ message: "bars updated !" });	
 		}).catch((err) => {
 			return res.status(401).send({ message: "Error updating bars", err })
 		})
@@ -64,8 +67,9 @@ controller.delete = (req, res) => {
 	const id = req.params.id;
 
 	Bars.destroy({ where: { id } })
-		.then(() => {
-			return res.send({ message: "bars deleted !" });
+		.then((deleteCount) => {
+			if (deleteCount === 0) return res.status(401).send({ message: "Cannot delete bar, bar not found" })
+			return res.send({ message: "Bar deleted !" });
 		})
 };
 
@@ -74,7 +78,7 @@ controller.login = async (req, res) => {
 	const { email, password } = req.body;
 	const bars = await Bars.findOne({ where: { email } });
 
-  if (!bars || !(await bcrypt.compare(password, bars.password))) {
+	if (!bars || !(await bcrypt.compare(password, bars.password))) {
 		return res.status(401).json({ error: "Invalid email or password" });
 	}
 
