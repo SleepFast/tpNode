@@ -6,14 +6,14 @@ const app = express()
 const PORT = process.env.SERVER_PORT || 3001
 
 
-const userRouter = require("./router/userRouter")
-const taskRouter = require("./router/taskRouter")
+const barsRouter = require("./router/barsRouter")
+// const taskRouter = require("./router/taskRouter")
 
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
-app.use(userRouter)
-app.use(taskRouter)
+app.use(barsRouter)
+// app.use(taskRouter)
 
 app.listen(PORT, () => {
   console.log(`App started on port http://localhost:${PORT}`)

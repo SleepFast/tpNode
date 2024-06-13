@@ -33,7 +33,7 @@ const ensureHaveProductBody = (req, res, next) => {
     return res.send(errors)
   }
 
-  req.product = {name, price, description, quantity}
+  req.product = { name, price, description, quantity }
   next()
 }
 
