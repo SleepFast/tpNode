@@ -1,5 +1,6 @@
 const db = require('../config/db')
 const { DataTypes } = require('@sequelize/core')
+const Bars = require('./Bars')
 
 const Commande = db.define('Commande', {
   id : { type : DataTypes.INTEGER, primaryKey: true, autoIncrement : true },
@@ -39,15 +40,15 @@ const Commande = db.define('Commande', {
       len: [3, 255],
     }
   },
-  // bars_id: {
-  //   type: DataTypes.INTEGER,
-  //   references: {
-  //     model: Bars,
-  //     key: 'id',
-  //   },
-  //   onDelete: 'CASCADE',
-  //   allowNull: false,
-  // }
+  bars_id: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Bars,
+      key: 'id',
+    },
+    onDelete: 'CASCADE',
+    allowNull: false,
+  }
 })
 
 module.exports = Commande
