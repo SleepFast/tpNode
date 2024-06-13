@@ -6,7 +6,6 @@ const seed = require("./data/seed");
 
 const PORT = process.env.SERVER_PORT || 3001
 
-seed()
 const barsRouter = require("./router/barsRouter")
 const biereRouter = require("./router/biereRouter")
 const commandeRouter = require("./router/commandeRouter")
@@ -20,10 +19,13 @@ app.use(biereRouter)
 app.use(commandeRouter)
 app.use(biere_commandeRouter)
 
-app.listen(PORT, () => {
-  console.log(`App started on port http://localhost:${PORT}`)
-})
+function runApp() {
+  app.listen(PORT, () => {
+    console.log(`App started on port http://localhost:${PORT}`)
+  })
+}
 
+seed(runApp)
 
 
 

@@ -67,7 +67,7 @@ const generateBiereCommandes = async (num, bieres, commandes) => {
   console.log(`${num} biereCommandes created`);
 };
 
-const seed = async () => {
+const seed = async (runApp) => {
   try {
     await db.sync({ alter: true }); // This will alter tables instead of dropping them
     console.log('Database synchronized');
@@ -81,7 +81,7 @@ const seed = async () => {
   } catch (error) {
     console.error('Error seeding database:', error);
   } finally {
-    process.exit();
+    runApp()
   }
 };
 
