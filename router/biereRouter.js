@@ -5,10 +5,8 @@ const router = express.Router()
 
 router.post("/bars/:id/biere", controller.create)
 router.get("/biere/:id", controller.getById)
+router.get("/bars/:id/biere", controller.getBiereForBar)
 router.put("/biere/:id", controller.update)
 router.delete("/biere/:id", controller.delete)
 
 module.exports = router
-/**
-  GET /bars/:id_bar/biere => Liste des bières d'un bar
- */

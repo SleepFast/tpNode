@@ -26,6 +26,21 @@ controller.getById = (req, res) => {
     });
 };
 
+controller.getBiereForBar = (req, res) => {
+  const id = req.params.id;
+
+  Biere.findAll({ where: { barsId: id } })
+    .then((b) => {
+      if (!b) {
+        return res.status(200).send({ message: "Biere not found" });
+      }
+      return res.status(200).send(b);
+    })
+    .catch((err) => {
+      res.status(400).send({ message: "Biere not found" });
+    });
+};
+
 controller.create = (req, res) => {
   const barsId = req.params.id;
   const { name, description, degree, prix } = req.body;
