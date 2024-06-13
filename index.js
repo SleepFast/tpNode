@@ -2,10 +2,11 @@ require('dotenv').config();
 const express = require("express")
 const bodyParser = require('body-parser')
 const app = express()
+const seed = require("./data/seed");
 
 const PORT = process.env.SERVER_PORT || 3001
 
-
+seed()
 const barsRouter = require("./router/barsRouter")
 const biereRouter = require("./router/biereRouter")
 const commandeRouter = require("./router/commandeRouter")
