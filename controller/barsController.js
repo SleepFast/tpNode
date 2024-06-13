@@ -54,7 +54,6 @@ controller.update = async (req, res) => {
 
 	Bars.update(bars, { where: { id } })
 		.then((updateCount) => {
-			console.log(updateCount[0])
 			if (updateCount[0] === 0) return res.status(401).send({ message: "Bar not found" })
 			return res.send({ message: "bars updated !" });	
 		}).catch((err) => {
