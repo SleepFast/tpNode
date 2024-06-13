@@ -1,5 +1,6 @@
 const db = require('../config/db')
 const { DataTypes } = require('@sequelize/core')
+const Bars = require('./Bars')
 
 const Biere = db.define('Biere', {
   id : { type : DataTypes.INTEGER, primaryKey: true, autoIncrement : true },
@@ -38,15 +39,20 @@ const Biere = db.define('Biere', {
       min: 0,
     }
   },
-  // bars_id: {
-  //   type: DataTypes.INTEGER,
-  //   references: {
-  //     model: Bars,
-  //     key: 'id',
-  //   },
-  //   onDelete: 'CASCADE',
-  //   allowNull: false,
-  // }
+  barsId: {
+    type: DataTypes.INTEGER,
+    references: {
+      model: Bars,
+      key: 'id',
+    },
+    onDelete: 'CASCADE',
+    allowNull: false,
+  }
 })
+
+
+Bars.hasMany(Biere, { foreignKey: 'barsId', as: 'bieres' });
+Biere.belongsTo(Bars, { foreignKey: 'barsId', as: 'bars' });
+
 
 module.exports = Biere

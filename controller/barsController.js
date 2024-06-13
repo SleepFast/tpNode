@@ -1,4 +1,4 @@
-const Bars = require("../model/Bars");
+const Bars = require("../models/Bars");
 const bcrypt = require("bcryptjs");
 const { generateToken } = require("../auth/auth");
 
