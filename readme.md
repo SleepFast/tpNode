@@ -1,5 +1,7 @@
-# Lancer le container : 
+# Construire l'image Docker :
+`docker build -t my-mariadb-image .`
 
+# Lancer le container : 
 `docker compose up -d`
 
 # Ouvrir une session shell dans le conteneur
