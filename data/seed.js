@@ -5,6 +5,7 @@ const Bars = require('../models/Bars');
 const Biere = require('../models/Biere');
 const Commande = require('../models/Commande');
 const Biere_commande = require('../models/Biere_commande');
+const bcrypt = require("bcryptjs");
 
 const generateBars = async (num) => {
   const bars = [];
@@ -15,7 +16,7 @@ const generateBars = async (num) => {
       tel: faker.phone.number('##########'), // Generate a 10-digit phone number
       description: faker.lorem.sentence(),
       email: faker.internet.email(),
-      password: faker.internet.password(),
+      password: await bcrypt.hash('123', 10),
     });
   }
   await Bars.bulkCreate(bars);
