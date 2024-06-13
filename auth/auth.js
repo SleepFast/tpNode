@@ -9,13 +9,13 @@ const generateToken = (user) => {
 
 // Middleware to verify JWT Token
 const verifyToken = (req, res, next) => {
-  const jwtCookie = req.cookies.jwt;
+  const jwtCookie = req.headers.cookie;
 
   if (!jwtCookie) {
     return res.status(401).json({ error: 'No token provided' });
   }
 
-  const token = jwtCookie.split(' ')[1];
+  const token = jwtCookie.split('=')[1];
 
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {

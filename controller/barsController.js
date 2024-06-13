@@ -45,9 +45,12 @@ controller.register = async (req, res) => {
 		});
 };
 
-controller.update = (req, res) => {
+controller.update = async (req, res) => {
 	const { name, adresse, tel, description, email, password } = req.body;
-	const bars = { name, adresse, tel, description, email, password };
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+	const bars = { name, adresse, tel, description, email, password: hashedPassword };
+
 	Bars.update(bars, { where: { email } })
 		.then(() => {
 			return res.send({ message: "bars updated !" });
@@ -69,10 +72,9 @@ controller.delete = (req, res) => {
 // Login bars
 controller.login = async (req, res) => {
 	const { email, password } = req.body;
-
 	const bars = await Bars.findOne({ where: { email } });
 
-	if (!bars || !(await bcrypt.compare(password, bars.password))) {
+  if (!bars || !(await bcrypt.compare(password, bars.password))) {
 		return res.status(401).json({ error: "Invalid email or password" });
 	}
 
