@@ -2,6 +2,33 @@ const controller = {};
 
 const Commande = require("../models/Commande");
 
+// POST /bars/:id_bar/commandes => Ajouter une commande à un bar 
+
+// PUT /commandes/:id_commande => Modifier une commande d'un bar
+
+// DELETE /commandes/:id_commande => Supprimer une commande d'un bar
+
+// GET /bars/:id_bar/commandes => Liste des commandes d'un bar
+
+// GET /commandes/:id => Détail d'une commande d'un bar
+
+controller.create = (req, res) => {
+  const barsId = req.params.barsId
+  const { name, prix, date } = req.body;
+
+	const commande = { name, prix, date, status: "en cours", barsId };
+
+  Commande.create(commande)
+		.then((commande) => {
+			return res.status(201).send({ commande: commande, message: "commande created" });
+		})
+		.catch((err) => {
+			return res
+				.status(400)
+				.send({ message: "Error creating commande", error: err.errors });
+		});
+}
+
 controller.getAll = (req, res) => {
   Commande.findAll()
     .then((commandes) => {
