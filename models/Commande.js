@@ -31,16 +31,15 @@ const Commande = db.define('Commande', {
     }
   },  
   status: { 
-    type : DataTypes.ENUM("en cours", "terminée"),
-    allowNull : false,
-    unique: true,
+    type: DataTypes.ENUM("en cours", "terminée"),
+    allowNull: false,
     validate: {
-      notNull : true,
-      notEmpty : true,
+      notNull: true,
+      notEmpty: true,
       len: [3, 255],
     }
   },
-  bars_id: {
+  barsId: {
     type: DataTypes.INTEGER,
     references: {
       model: Bars,

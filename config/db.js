@@ -3,7 +3,7 @@ const { MariaDbDialect } = require('@sequelize/mariadb');
 
 const db = new Sequelize({
   dialect: MariaDbDialect,
-  database: 'KANBAN',
+  database: 'dbBars',
   user: 'root',  // Notez que 'username' est utilisé à la place de 'user'
   password: 'password',
   host: 'localhost',
