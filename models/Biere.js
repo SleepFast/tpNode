@@ -50,9 +50,4 @@ const Biere = db.define('Biere', {
   }
 })
 
-
-Bars.hasMany(Biere, { foreignKey: 'barsId', as: 'bieres' });
-Biere.belongsTo(Bars, { foreignKey: 'barsId', as: 'bars' });
-
-
 module.exports = Biere

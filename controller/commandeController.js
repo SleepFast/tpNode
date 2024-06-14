@@ -60,11 +60,12 @@ controller.getById = (req, res) => {
     });
 };
 
-controller.update = (req, res) => {
+controller.update = async (req, res) => {
   const id_commande = req.params.id_commande;
   const { name, prix, date, status, barsId } = req.body;
   const commande = { name, prix, date, status, barsId };
 
+<<<<<<< HEAD
   Commande.update(commande, { where: { id: id_commande } })
     .then((queryResult) => {
       res.status(201).send({ message: "Commande updated", result: queryResult });
@@ -72,6 +73,25 @@ controller.update = (req, res) => {
     .catch((error) => {
       res.status(400).send({ message: "Commande not updated", error });
     });
+=======
+  try {
+    const existingCommande = await Commande.findOne({ where: { id: id_commande } });
+
+    if (!existingCommande) {
+      return res.status(404).send({ message: "Commande not found" });
+    }
+
+    if (existingCommande.status === "terminée") {
+      return res.status(400).send({ message: "Cannot update a completed Commande" });
+    }
+
+    const queryResult = await Commande.update(commande, { where: { id: id_commande } });
+    
+    res.status(200).send({ message: "Commande updated", result: queryResult });
+  } catch (error) {
+    res.status(400).send({ message: "Commande not updated", error });
+  }
+>>>>>>> tomtom4
 };
 
 controller.delete = (req, res) => {
