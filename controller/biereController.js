@@ -27,7 +27,7 @@ controller.getBiereDegreeForBar = (req, res) => {
 
       moyenneDegree = moyenneDegree / bieres.length
 
-      res.status(200).send({moyenneDegree});
+      res.status(200).send({ moyenneDegree });
     })
     .catch((err) => {
       res.status(503).send({ message: "Find average degree with id bar failed" });
@@ -50,13 +50,16 @@ controller.getById = (req, res) => {
 
 controller.getBiereForBar = async (req, res) => {
   const id = req.params.id;
-  let { sort } = req.query;
+  let { sort, limit, offset } = req.query;
+  
   if (sort && (sort.toLowerCase() === "asc" || sort.toLowerCase() === "desc")) {
     sort = sort.toLowerCase();
     orderOption = [['name', `${sort}`]];
 
     const bars = await Bars.findAll({
-      order: orderOption
+      order: orderOption,
+      limit: limit ? parseInt(limit) : undefined,
+      offset: offset ? parseInt(offset) : undefined
     });
 
     return res.status(200).send({ bars });
