@@ -7,6 +7,62 @@ controller.getCommandeForBar = async (req, res) => {
   const date = req.query.date;
   const prix_min = req.query.prix_min;
   const prix_max = req.query.prix_max;
+  const status = req.query.status;
+
+  if (new Date(date) instanceof Date && !isNaN(new Date(date))) {
+    const myDate = new Date(date);
+    const myTomorrowDate = new Date(date).setDate(myDate.getDate() + 1);
+    let where;
+
+    if (!!prix_min && !!prix_max && !!status) {
+      where = {
+        where: {
+          barsId: id,
+          date: {
+            [Op.gte]: myDate,
+            [Op.lt]: myTomorrowDate,
+          },
+          prix: {
+            [Op.gte]: prix_min,
+            [Op.lt]: prix_max,
+          },
+          status: status,
+        },
+      };
+    } else if (!!prix_min && !!prix_max) {
+      where = {
+        where: {
+          barsId: id,
+          date: {
+            [Op.gte]: myDate,
+            [Op.lt]: myTomorrowDate,
+          },
+          prix: {
+            [Op.gte]: prix_min,
+            [Op.lt]: prix_max,
+          },
+        },
+      };
+    } else {
+      where = {
+        where: {
+          barsId: id,
+          date: {
+            [Op.gte]: myDate,
+            [Op.lt]: myTomorrowDate,
+          },
+        },
+      };
+    }
+
+    try {
+      const commandes = await Commande.findAll(where);
+
+      return res.status(200).send(commandes);
+    } catch (error) {
+      res.status(500).json({ error: "Error retrieving commandes by date" });
+    }
+  }
 
   if (!!prix_min && !!prix_max) {
     try {
@@ -23,27 +79,6 @@ controller.getCommandeForBar = async (req, res) => {
       return res.status(200).send(commandes);
     } catch (error) {
       res.status(500).json({ error: "Error retrieving commandes by price" });
-    }
-  }
-
-  if (new Date(date) instanceof Date && !isNaN(new Date(date))) {
-    const myDate = new Date(date);
-    const myTomorrowDate = new Date(date).setDate(myDate.getDate() + 1);
-
-    try {
-      const commandes = await Commande.findAll({
-        where: {
-          barsId: id,
-          date: {
-            [Op.gte]: myDate,
-            [Op.lt]: myTomorrowDate,
-          },
-        },
-      });
-
-      return res.status(200).send(commandes);
-    } catch (error) {
-      res.status(500).json({ error: "Error retrieving commandes by date" });
     }
   }
 

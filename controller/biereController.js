@@ -1,8 +1,6 @@
 const controller = {};
 const { Op } = require("sequelize");
 
-const { Op } = require('sequelize');
-const Bars = require('../models/Bars');
 const Biere = require("../models/Biere");
 const Commande = require("../models/Commande");
 const Biere_commande = require("../models/Biere_commande");
@@ -126,11 +124,7 @@ controller.getBiereDegreeForBar = async (req, res) => {
 
       moyenneDegree = moyenneDegree / bieres.length;
 
-<<<<<<< HEAD
-      res.status(200).send({ moyenneDegree });
-=======
       return res.status(200).send({ moyenneDegree });
->>>>>>> tomtom5
     })
     .catch((err) => {
       res
@@ -233,11 +227,6 @@ controller.update = (req, res) => {
 controller.delete = async (req, res) => {
   const id = req.params.id;
 
-<<<<<<< HEAD
-  const biereCommandes = await Biere_commande.findAll({ where: { biere_id: id } });
-
-  await Commande.destroy({ where: { id: biereCommandes.map(bc => bc.commande_id) } });
-=======
   const biereCommandes = await Biere_commande.findAll({
     where: { biere_id: id },
   });
@@ -245,7 +234,6 @@ controller.delete = async (req, res) => {
   await Commande.destroy({
     where: { id: biereCommandes.map((bc) => bc.commande_id) },
   });
->>>>>>> tomtom5
 
   Biere.destroy({ where: { id: id } })
     .then((queryResult) => {
