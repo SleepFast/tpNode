@@ -14,6 +14,25 @@ controller.getAll = (req, res) => {
     });
 };
 
+controller.getBiereDegreeForBar = (req, res) => {
+  const id = req.params.id_bar;
+  let moyenneDegree = 0
+
+  Biere.findAll({ where: { barsId: id } })
+    .then((bieres) => {
+      bieres.map((biere) => {
+        moyenneDegree = biere.degree + moyenneDegree
+      })
+
+      moyenneDegree = moyenneDegree / bieres.length
+
+      res.status(200).send({moyenneDegree});
+    })
+    .catch((err) => {
+      res.status(503).send({ message: "Find average degree with id bar failed" });
+    });
+};
+
 controller.getById = (req, res) => {
   const id = req.params.id;
   Biere.findByPk(id)
