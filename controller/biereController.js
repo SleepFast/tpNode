@@ -1,5 +1,6 @@
 const controller = {};
 
+const { Op } = require('sequelize');
 const Bars = require('../models/Bars');
 const Biere = require("../models/Biere");
 const Commande = require("../models/Commande");
@@ -27,7 +28,7 @@ controller.getBiereDegreeForBar = (req, res) => {
 
       moyenneDegree = moyenneDegree / bieres.length
 
-      res.status(200).send({moyenneDegree});
+      res.status(200).send({ moyenneDegree });
     })
     .catch((err) => {
       res.status(503).send({ message: "Find average degree with id bar failed" });
@@ -50,16 +51,36 @@ controller.getById = (req, res) => {
 
 controller.getBiereForBar = async (req, res) => {
   const id = req.params.id;
-  let { sort } = req.query;
+  let { sort, limit, offset, degree_max, prix_min, prix_max } = req.query;
+
   if (sort && (sort.toLowerCase() === "asc" || sort.toLowerCase() === "desc")) {
     sort = sort.toLowerCase();
     orderOption = [['name', `${sort}`]];
 
-    const bars = await Bars.findAll({
-      order: orderOption
+    let conditions = undefined;
+    if (degree_max) {
+      conditions = {
+        degree: {
+          [Op.lte]: degree_max
+        }
+      };
+    }
+
+    if(prix_min && prix_max) {
+      conditions["prix"] = {
+        [Op.gte]: prix_min,
+        [Op.lte]: prix_max
+      }
+    }
+
+    const bieres = await Biere.findAll({
+      where: conditions,
+      order: orderOption,
+      limit: limit ? parseInt(limit) : undefined,
+      offset: offset ? parseInt(offset) : undefined
     });
 
-    return res.status(200).send({ bars });
+    return res.status(200).send({ bieres });
   }
 
 
