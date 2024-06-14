@@ -44,17 +44,17 @@ controller.getBiereForBar = (req, res) => {
 controller.create = (req, res) => {
   const barsId = req.params.id;
   const { name, description, degree, prix } = req.body;
-	const biere = { name, description, degree, prix, barsId };
+  const biere = { name, description, degree, prix, barsId };
 
   Biere.create(biere)
-		.then((biere) => {
-			return res.status(201).send({ biere, message: "Biere created" });
-		})
-		.catch((err) => {
-			return res
-				.status(400)
-				.send({ message: "Error creating biere", error: err.errors });
-		});
+    .then((biere) => {
+      return res.status(201).send({ biere, message: "Biere created" });
+    })
+    .catch((err) => {
+      return res
+        .status(400)
+        .send({ message: "Error creating biere", error: err.errors });
+    });
 }
 
 controller.update = (req, res) => {
