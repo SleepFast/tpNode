@@ -1,5 +1,5 @@
 const controller = {};
-
+const { ValidationError } = require('sequelize');
 const Commande = require("../models/Commande");
 
 controller.getCommandeForBar = (req, res) => {
@@ -28,16 +28,18 @@ controller.create = (req, res) => {
 			return res.status(201).send({ commande: commande, message: "commande created" });
 		})
 		.catch((err) => {
-			return res
-				.status(400)
-				.send({ message: "Error creating commande", error: err.errors });
+			if (err.errors[0].original instanceof ValidationError) {
+        return res.status(400).send({ error: err.errors[0].original.name, message: "Command date cannot be greater than today" });
+      } else {
+        return res.status(500).send({ error: 'An unexpected error occurred' });
+      }
 		});
 }
 
 controller.getAll = (req, res) => {
   Commande.findAll()
     .then((commandes) => {
-      res.status(200).send(commandes);
+      res.status(201).send(commandes);
     })
     .catch((err) => {
       res.status(503).send({ message: "Find all failed" });
@@ -49,7 +51,7 @@ controller.getById = (req, res) => {
   Commande.findByPk(id)
     .then((b) => {
       if (!b) {
-        return res.status(200).send({ message: "Commande not found" });
+        return res.status(201).send({ message: "Commande not found" });
       }
       res.send(b);
     })
@@ -65,7 +67,7 @@ controller.update = (req, res) => {
 
   Commande.update(commande, { where: { id: id_commande } })
     .then((queryResult) => {
-      res.status(200).send({ message: "Commande updated", result: queryResult });
+      res.status(201).send({ message: "Commande updated", result: queryResult });
     })
     .catch((error) => {
       res.status(400).send({ message: "Commande not updated", error });
@@ -79,7 +81,7 @@ controller.delete = (req, res) => {
     .then((queryResult) => {
       if (queryResult === 0) return res.status(400).send("Commande not found");
 
-      res.status(200).send({ message: "Commande deleted !", result: queryResult });
+      res.status(201).send({ message: "Commande deleted !", result: queryResult });
     })
     .catch((error) => {
       res.status(400).send({ message: "Commande not deleted", error });
