@@ -17,6 +17,7 @@ const Biere_commande = db.define('Biere_commande', {
       model: Commande,
       key: 'id',
     },    
+    onDelete: 'CASCADE',
   },
 })
 

@@ -2,15 +2,20 @@ const controller = {};
 
 const Commande = require("../models/Commande");
 
-// POST /bars/:id_bar/commandes => Ajouter une commande à un bar 
+controller.getCommandeForBar = (req, res) => {
+  const id = req.params.id_bar;
 
-// PUT /commandes/:id_commande => Modifier une commande d'un bar
-
-// DELETE /commandes/:id_commande => Supprimer une commande d'un bar
-
-// GET /bars/:id_bar/commandes => Liste des commandes d'un bar
-
-// GET /commandes/:id => Détail d'une commande d'un bar
+  Commande.findAll({ where: { barsId: id } })
+    .then((b) => {
+      if (!b) {
+        return res.status(200).send({ message: "Commande not found for this bar" });
+      }
+      return res.status(200).send(b);
+    })
+    .catch((err) => {
+      res.status(400).send({ message: "Commande not found" });
+    });
+};
 
 controller.create = (req, res) => {
   const barsId = req.params.barsId
@@ -54,11 +59,11 @@ controller.getById = (req, res) => {
 };
 
 controller.update = (req, res) => {
-  const id = req.params.id;
-  const { name, prix, date, status, bars_id } = req.body;
-  const commande = { name, prix, date, status, bars_id };
+  const id_commande = req.params.id_commande;
+  const { name, prix, date, status, barsId } = req.body;
+  const commande = { name, prix, date, status, barsId };
 
-  Commande.update(commande, { where: { id: id } })
+  Commande.update(commande, { where: { id: id_commande } })
     .then((queryResult) => {
       res.status(200).send({ message: "Commande updated", result: queryResult });
     })
@@ -68,7 +73,7 @@ controller.update = (req, res) => {
 };
 
 controller.delete = (req, res) => {
-  const id = req.params.id;
+  const id = req.params.id_commande;
 
   Commande.destroy({ where: { id: id } })
     .then((queryResult) => {
