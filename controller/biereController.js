@@ -1,5 +1,6 @@
 const controller = {};
 
+const Bars = require('../models/Bars');
 const Biere = require("../models/Biere");
 const Commande = require("../models/Commande");
 const Biere_commande = require("../models/Biere_commande");
@@ -47,8 +48,20 @@ controller.getById = (req, res) => {
     });
 };
 
-controller.getBiereForBar = (req, res) => {
+controller.getBiereForBar = async (req, res) => {
   const id = req.params.id;
+  let { sort } = req.query;
+  if (sort && (sort.toLowerCase() === "asc" || sort.toLowerCase() === "desc")) {
+    sort = sort.toLowerCase();
+    orderOption = [['name', `${sort}`]];
+
+    const bars = await Bars.findAll({
+      order: orderOption
+    });
+
+    return res.status(200).send({ bars });
+  }
+
 
   Biere.findAll({ where: { barsId: id } })
     .then((b) => {
@@ -95,9 +108,9 @@ controller.update = (req, res) => {
 controller.delete = async (req, res) => {
   const id = req.params.id;
 
-  const biereCommandes = await Biere_commande.findAll({where: { biere_id: id }});
+  const biereCommandes = await Biere_commande.findAll({ where: { biere_id: id } });
 
-  await Commande.destroy({ where: { id: biereCommandes.map(bc => bc.commande_id) }});
+  await Commande.destroy({ where: { id: biereCommandes.map(bc => bc.commande_id) } });
 
   Biere.destroy({ where: { id: id } })
     .then((queryResult) => {
