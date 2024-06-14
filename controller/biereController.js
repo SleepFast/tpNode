@@ -155,21 +155,25 @@ controller.getBiereForBar = async (req, res) => {
     sort = sort.toLowerCase();
     orderOption = [['name', `${sort}`]];
 
-    let conditions = undefined;
-    if (degree_max) {
-      conditions = {
-        degree: {
-          [Op.lte]: degree_max
-        }
-      };
+    let conditions = {};
+    conditions['barsId'] = {
+      [Op.eq]: id
     }
 
-    if(prix_min && prix_max) {
+    if (degree_max) {
+      conditions["degree"] = {
+        [Op.lte]: degree_max
+      }
+    }
+
+    if (prix_min && prix_max) {
       conditions["prix"] = {
         [Op.gte]: prix_min,
         [Op.lte]: prix_max
       }
     }
+
+    console.log(conditions);
 
     const bieres = await Biere.findAll({
       where: conditions,
