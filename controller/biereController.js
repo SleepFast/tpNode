@@ -1,4 +1,5 @@
 const controller = {};
+const { Op } = require("sequelize");
 
 const { Op } = require('sequelize');
 const Bars = require('../models/Bars');
@@ -16,22 +17,125 @@ controller.getAll = (req, res) => {
     });
 };
 
-controller.getBiereDegreeForBar = (req, res) => {
+controller.getBiereDegreeForBar = async (req, res) => {
   const id = req.params.id_bar;
-  let moyenneDegree = 0
+  let moyenneDegree = 0;
+  const date = req.query.date;
+  const prix_min = req.query.prix_min;
+  const prix_max = req.query.prix_max;
+  const status = req.query.status;
+
+  if (new Date(date) instanceof Date && !isNaN(new Date(date))) {
+    const myDate = new Date(date);
+    const myTomorrowDate = new Date(date).setDate(myDate.getDate() + 1);
+
+    try {
+      const commandes = await Commande.findAll({
+        where: {
+          barsId: id,
+          date: {
+            [Op.gte]: myDate,
+            [Op.lt]: myTomorrowDate,
+          },
+          status: status || "",
+        },
+      });
+
+      const commandeIds = commandes.map((commande) => commande.id);
+
+      // Step 2: Find Biere_commande records for the found Commande IDs
+      const biereCommandes = await Biere_commande.findAll({
+        where: {
+          commande_id: commandeIds,
+        },
+      });
+
+      const biereCommandesIds = biereCommandes.map(
+        (bierecommande) => bierecommande.biere_id
+      );
+
+      let biereFromCommandes;
+      if (!!prix_min && !!prix_max) {
+        biereFromCommandes = await Biere.findAll({
+          where: {
+            id: biereCommandesIds,
+            prix: {
+              [Op.gte]: prix_min,
+              [Op.lt]: prix_max,
+            },
+          },
+        });
+      } else {
+        biereFromCommandes = await Biere.findAll({
+          where: {
+            id: biereCommandesIds,
+          },
+        });
+      }
+      // Calculate average alcohol degree
+      let totalDegree = 0;
+      let beerCount = 0;
+
+      biereFromCommandes.map((biereFromCommande) => {
+        totalDegree += biereFromCommande.degree;
+        beerCount++;
+      });
+
+      const averageDegree = totalDegree / beerCount;
+
+      console.log(`POUET`, averageDegree);
+      return res.status(200).send({ averageDegree });
+    } catch (error) {
+      return res
+        .status(500)
+        .json({ error: "Error retrieving average beer degree" });
+    }
+  }
+
+  if (!!prix_min && !!prix_max) {
+    return Biere.findAll({
+      where: {
+        barsId: id,
+        prix: {
+          [Op.gte]: prix_min,
+          [Op.lt]: prix_max,
+        },
+      },
+    })
+      .then((bieres) => {
+        bieres.map((biere) => {
+          moyenneDegree = biere.degree + moyenneDegree;
+        });
+
+        moyenneDegree = moyenneDegree / bieres.length;
+
+        return res.status(200).send(moyenneDegree);
+      })
+      .catch((err) => {
+        return res
+          .status(503)
+          .send({ message: "Error retrieving biere degree average by price" });
+      });
+  }
 
   Biere.findAll({ where: { barsId: id } })
     .then((bieres) => {
       bieres.map((biere) => {
-        moyenneDegree = biere.degree + moyenneDegree
-      })
+        moyenneDegree = biere.degree + moyenneDegree;
+      });
 
-      moyenneDegree = moyenneDegree / bieres.length
+      moyenneDegree = moyenneDegree / bieres.length;
 
+<<<<<<< HEAD
       res.status(200).send({ moyenneDegree });
+=======
+      return res.status(200).send({ moyenneDegree });
+>>>>>>> tomtom5
     })
     .catch((err) => {
-      res.status(503).send({ message: "Find average degree with id bar failed" });
+      res
+        .status(503)
+        .send({ message: "Find average degree with id bar failed" });
     });
 };
 
@@ -110,7 +214,7 @@ controller.create = (req, res) => {
         .status(400)
         .send({ message: "Error creating biere", error: err.errors });
     });
-}
+};
 
 controller.update = (req, res) => {
   const id = req.params.id;
@@ -129,9 +233,19 @@ controller.update = (req, res) => {
 controller.delete = async (req, res) => {
   const id = req.params.id;
 
+<<<<<<< HEAD
   const biereCommandes = await Biere_commande.findAll({ where: { biere_id: id } });
 
   await Commande.destroy({ where: { id: biereCommandes.map(bc => bc.commande_id) } });
+=======
+  const biereCommandes = await Biere_commande.findAll({
+    where: { biere_id: id },
+  });
+
+  await Commande.destroy({
+    where: { id: biereCommandes.map((bc) => bc.commande_id) },
+  });
+>>>>>>> tomtom5
 
   Biere.destroy({ where: { id: id } })
     .then((queryResult) => {
