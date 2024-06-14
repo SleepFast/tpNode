@@ -10,6 +10,7 @@ const Biere_commande = db.define('Biere_commande', {
       model: Biere,
       key: 'id',
     },
+    onDelete: 'CASCADE'
   },
   commande_id: {
     type: DataTypes.INTEGER,
