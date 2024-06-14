@@ -65,15 +65,6 @@ controller.update = async (req, res) => {
   const { name, prix, date, status, barsId } = req.body;
   const commande = { name, prix, date, status, barsId };
 
-<<<<<<< HEAD
-  Commande.update(commande, { where: { id: id_commande } })
-    .then((queryResult) => {
-      res.status(201).send({ message: "Commande updated", result: queryResult });
-    })
-    .catch((error) => {
-      res.status(400).send({ message: "Commande not updated", error });
-    });
-=======
   try {
     const existingCommande = await Commande.findOne({ where: { id: id_commande } });
 
@@ -91,7 +82,6 @@ controller.update = async (req, res) => {
   } catch (error) {
     res.status(400).send({ message: "Commande not updated", error });
   }
->>>>>>> tomtom4
 };
 
 controller.delete = (req, res) => {

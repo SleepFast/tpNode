@@ -57,11 +57,7 @@ controller.create = (req, res) => {
         .status(400)
         .send({ message: "Error creating biere", error: err.errors });
     });
-<<<<<<< HEAD
 }
-=======
-};
->>>>>>> tomtom4
 
 controller.update = (req, res) => {
   const id = req.params.id;
