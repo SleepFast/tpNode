@@ -1,9 +1,10 @@
 const controller = require("../controller/barsController")
-const { verifyToken } = require("../auth/auth")
+const { verifyToken } = require("../middleware/auth")
+const { loginValidationRules, validate } = require("../middleware/form")
 const express = require('express')
 const router = express.Router()
 
-router.post("/login", controller.login)
+router.post("/login", loginValidationRules(), validate, controller.login)
 router.post("/bars", controller.register)
 router.put("/bars/:id", verifyToken, controller.update)
 router.delete("/bars/:id", verifyToken, controller.delete)

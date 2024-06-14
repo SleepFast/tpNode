@@ -1,6 +1,6 @@
 const Bars = require("../models/Bars");
 const bcrypt = require("bcryptjs");
-const { generateToken } = require("../auth/auth");
+const { generateToken } = require("../middleware/auth");
 
 const controller = {};
 
