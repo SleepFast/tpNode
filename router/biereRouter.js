@@ -10,4 +10,5 @@ router.get("/bars/:id_bar/degree", controller.getBiereDegreeForBar)
 router.put("/biere/:id", controller.update)
 router.delete("/biere/:id", controller.delete)
 
+
 module.exports = router
