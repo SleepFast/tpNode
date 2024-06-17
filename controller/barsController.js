@@ -22,7 +22,7 @@ controller.getAll = async (req, res) => {
   if (query) {
     let condition = {}
 
-    if (Object.keys(query)[0].toLocaleLowerCase() == "name") {
+    if (Object.keys(query)[0] && Object.keys(query)[0].toLowerCase() == "name") {
       const { name } = query
       condition = {
         name: {
@@ -40,7 +40,7 @@ controller.getAll = async (req, res) => {
       }
     }
 
-    if (Object.keys(query)[0].toLocaleLowerCase() == "ville") {
+    if (Object.keys(query)[0] && Object.keys(query)[0].toLowerCase() == "ville") {
       const { ville } = query
       condition = {
         adresse: {
